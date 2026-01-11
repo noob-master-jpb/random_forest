@@ -8,12 +8,10 @@ pio.renderers.default = "browser"
 df = pd.read_parquet("data.parquet")
 # pprint(dict(df.describe(include="all")))
 
+def test(input):
+    input = input.strip("_")
+    return int(input)
 
+df["Age"] = df["Age"].apply(test)
 
-c = 0
-df = df["Age"]
-for i in df:
-    if type(i) is not int:
-        c += 1
-print(c)
-# print(type(df[0]))
+df.to_parquet("data.parquet")
