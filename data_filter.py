@@ -94,8 +94,36 @@ df['Month_num'] = df['Month'].map(month_order)
 df['Credit_History_Age'] = df.groupby('Customer_ID')['Credit_History_Age'].transform(lambda group: group.interpolate(method='linear'))
 df['Credit_History_Age'] = df.groupby('Customer_ID')['Credit_History_Age'].transform(lambda group: group.ffill().bfill())
 df.dropna(subset=['Credit_History_Age'], inplace=True)
+
+df.drop(columns=['Month_num'], inplace=True)
 df["Changed_Credit_Limit"].fillna(0, inplace=True)
 
 df['Outstanding_Debt'] = df['Outstanding_Debt'].fillna(df['Outstanding_Debt'].mean())
 
+df["Occupation"] = df["Occupation"].apply(lambda x: None if x == '_______' else x)
+df["Credit_Mix"] = df["Credit_Mix"].apply(lambda x: None if x == '_' else x)
+
+occ_grp =  df.groupby('Customer_ID')['Occupation']
+
+def fill_occupation(row, occ_grp):
+    if row["Occupation"] is None:
+        group = occ_grp.get_group(row["Customer_ID"])
+        mode_val = group.mode()
+        return mode_val.iloc[0] if not mode_val.empty else None
+    return row["Occupation"]
+
+df["Occupation"] = df.apply(lambda x: fill_occupation(x, occ_grp), axis=1)
+df.dropna(subset=['Occupation'], inplace=True)
+
+cm_grp =  df.groupby('Customer_ID')['Credit_Mix']
+def fill_occupation(row, cm_grp):
+    if row["Credit_Mix"] is None:
+        group = cm_grp.get_group(row["Customer_ID"])
+        mode_val = group.mode()
+        return mode_val.iloc[0] if not mode_val.empty else None
+    return row["Credit_Mix"]
+df["Credit_Mix"] = df.apply(lambda x: fill_occupation(x, cm_grp), axis=1)
+df["Credit_Mix"].fillna(df['Credit_Mix'].mode()[0], inplace=True)
+
+df.drop_duplicates(inplace=True)
 df.to_parquet("data.parquet", index=False)
