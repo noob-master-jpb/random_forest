@@ -95,4 +95,7 @@ df['Credit_History_Age'] = df.groupby('Customer_ID')['Credit_History_Age'].trans
 df['Credit_History_Age'] = df.groupby('Customer_ID')['Credit_History_Age'].transform(lambda group: group.ffill().bfill())
 df.dropna(subset=['Credit_History_Age'], inplace=True)
 df["Changed_Credit_Limit"].fillna(0, inplace=True)
+
+df['Outstanding_Debt'] = df['Outstanding_Debt'].fillna(df['Outstanding_Debt'].mean())
+
 df.to_parquet("data.parquet", index=False)
