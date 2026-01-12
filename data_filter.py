@@ -1,10 +1,4 @@
 import pandas as pd
-import polars as pl
-import plotly.express as px
-import plotly.io as pio
-from pprint import pprint
-pio.renderers.default = "browser"
-
 
 df = pd.read_csv("dataset/train.csv",low_memory=False)
 
@@ -43,13 +37,13 @@ def to_bool(x):
 df["Payment_of_Min_Amount"] = df["Payment_of_Min_Amount"].apply(to_bool)
 
 df = df[(df["Age"]>=18) & (df["Age"]<=60)]
-df = df[(df["Annual_Income"]<=6000000)]
+df = df[(df["Annual_Income"]<=200000)]
 df = df[(df["Monthly_Inhand_Salary"]<=15000)]
 df = df[(df["Num_Bank_Accounts"]<=20)]
-df = df[(df["Num_Credit_Card"]<=30)]
-df = df[(df["Num_of_Loan"]<=100) & (df["Num_of_Loan"]>=0)]
-df = df[(df["Num_of_Delayed_Payment"]<=300)]
-df = df[(df["Num_Credit_Inquiries"]<=200)]
+df = df[(df["Num_Credit_Card"]<=12)]
+df = df[(df["Num_of_Loan"]<=12) & (df["Num_of_Loan"]>=0)]
+df = df[(df["Num_of_Delayed_Payment"]<=40)]
+df = df[(df["Num_Credit_Inquiries"]<=20)]
 df = df[(df["Total_EMI_per_month"]<=500)&(df["Num_of_Delayed_Payment"]>=0)]
 df = df[(df["Amount_invested_monthly"]<=1000)]
 
@@ -127,3 +121,4 @@ df["Credit_Mix"].fillna(df['Credit_Mix'].mode()[0], inplace=True)
 
 df.drop_duplicates(inplace=True)
 df.to_parquet("data.parquet", index=False)
+df.to_csv("data.csv", index=False)
