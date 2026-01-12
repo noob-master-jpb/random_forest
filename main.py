@@ -54,11 +54,45 @@ df = df[(df["Total_EMI_per_month"]<=500)&(df["Num_of_Delayed_Payment"]>=0)]
 df = df[(df["Amount_invested_monthly"]<=1000)]
 
 
+def to_months(text):
+    try:
+        text = str(text)
+    except:
+        pass
+    if text is None:
+        return None
+    if not isinstance(text, str):
+        return text
+    try:
+        data = text.split(" ")
+        for i in data:
+            i = i.strip()
+        while '' in data:
+            data.remove('')
+        years = int(data[0])
+        months = int(data[3])
+        months += years*12
+        return months
+    except:
+        return None
+
+
+df["Credit_History_Age"] = df["Credit_History_Age"].apply(to_months)
+
+df["Monthly_Balance"] = df.groupby("Customer_ID")["Monthly_Balance"].transform(lambda x: x.fillna(x.mean()))
+df["Monthly_Balance"] = df["Monthly_Balance"].transform(lambda x: x.fillna(df["Monthly_Balance"].mean()))
+df["Payment_of_Min_Amount"].fillna(0, inplace=True)
 
 
 
-
-
-
-
+month_order = {
+    'January': 1, 'February': 2, 'March': 3, 'April': 4,
+    'May': 5, 'June': 6, 'July': 7, 'August': 8,
+    'September': 9, 'October': 10, 'November': 11, 'December': 12
+}
+df['Month_num'] = df['Month'].map(month_order)
+df['Credit_History_Age'] = df.groupby('Customer_ID')['Credit_History_Age'].transform(lambda group: group.interpolate(method='linear'))
+df['Credit_History_Age'] = df.groupby('Customer_ID')['Credit_History_Age'].transform(lambda group: group.ffill().bfill())
+df.dropna(subset=['Credit_History_Age'], inplace=True)
+df["Changed_Credit_Limit"].fillna(0, inplace=True)
 df.to_parquet("data.parquet", index=False)
