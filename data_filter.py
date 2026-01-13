@@ -46,6 +46,7 @@ df = df[(df["Num_of_Delayed_Payment"]<=40)]
 df = df[(df["Num_Credit_Inquiries"]<=20)]
 df = df[(df["Total_EMI_per_month"]<=500)&(df["Num_of_Delayed_Payment"]>=0)]
 df = df[(df["Amount_invested_monthly"]<=1000)]
+df = df[(df["Monthly_Balance"]<=1500)]
 
 
 def to_months(text):
@@ -120,5 +121,17 @@ df["Credit_Mix"] = df.apply(lambda x: fill_occupation(x, cm_grp), axis=1)
 df["Credit_Mix"].fillna(df['Credit_Mix'].mode()[0], inplace=True)
 
 df.drop_duplicates(inplace=True)
+
+def map_credit_score(x):
+    if x in ['Poor']:
+        return 0
+    if x in ['Standard']:
+        return 1
+    if x in ['Good']:
+        return 2
+    return None
+df["Credit_Score"] = df["Credit_Score"].apply(map_credit_score)
+
+
 df.to_parquet("data.parquet", index=False)
 df.to_csv("data.csv", index=False)
