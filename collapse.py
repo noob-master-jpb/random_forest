@@ -12,11 +12,9 @@ rows = []
 
 for customer_id, data in group:
     row = {
-        "Customer_ID": customer_id,
         "Occupation": data["Occupation"].mode().iloc[0] if not data["Occupation"].mode().empty else np.nan,
         "Credit_Mix": data["Credit_Mix"].iloc[-1],
         "Credit_History_Age_last": data["Credit_History_Age"].iloc[-1],
-        "Credit_Score": data["Credit_Score"].iloc[-1],
         "Payment_of_Min_Amount_mode": data["Payment_of_Min_Amount"].mode().iloc[0] if not data["Payment_of_Min_Amount"].mode().empty else np.nan,
     }
     for col in ["Annual_Income", "Num_of_Loan", "Num_Bank_Accounts", "Num_Credit_Card"]:
@@ -27,6 +25,8 @@ for customer_id, data in group:
         row[f"{col}_max"] = data[col].max()
         if col in ["Outstanding_Debt", "Monthly_Balance"]:
             row[f"{col}_last"] = data[col].iloc[-1]
+            
+    row["Credit_Score"] = data["Credit_Score"].iloc[-1]
     rows.append(row)
 
 tdf = pd.DataFrame(rows)
