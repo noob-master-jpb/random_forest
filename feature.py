@@ -11,7 +11,7 @@ df = pd.read_parquet("data.parquet")
 print(df.corr(numeric_only=True))
 
 # df["test"] = (np.abs(df["Outstanding_Debt"])**2 + np.abs(df["Monthly_Balance"])**2)**(1/10)
-df["test"] = (np.abs(df["Delay_from_due_date"])**2 + np.abs(df["Num_Credit_Inquiries"])**2)**(1/5)
+df["test"] = np.log(df["Credit_History_Age"])**2
 
 fig = px.imshow(
     df.corr(numeric_only=True),
