@@ -30,4 +30,9 @@ for customer_id, data in group:
     rows.append(row)
 
 tdf = pd.DataFrame(rows)
+
+# Fill std NaNs with 0
+std_cols = [col for col in tdf.columns if col.endswith('_std')]
+tdf[std_cols] = tdf[std_cols].fillna(0)
+
 tdf.to_parquet("collapsed_data.parquet", index=False)

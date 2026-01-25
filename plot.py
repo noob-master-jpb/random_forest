@@ -8,5 +8,5 @@ from pprint import pprint
 df = pd.read_parquet("data.parquet")
 
 
-fig = px.violin(x=df["Credit_Score"], y=df["Monthly_Balance"],)
-fig.show()
+# fig = px.violin(x=df["Credit_Score"], y=df["Monthly_Balance"],)
+# fig.show()

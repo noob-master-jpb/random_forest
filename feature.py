@@ -5,21 +5,21 @@ import plotly.io as pio
 pio.renderers.default = "browser"
 
 from pprint import pprint
-df = pd.read_parquet("data.parquet")
+df = pd.read_parquet("collapsed_data.parquet")
 # pprint(dict(df.describe(include='all')))
 
-print(df.corr(numeric_only=True))
+pprint(dict(df.corr(numeric_only=True)))
 
 # df["test"] = (np.abs(df["Outstanding_Debt"])**2 + np.abs(df["Monthly_Balance"])**2)**(1/10)
-df["test"] = np.log(df["Credit_History_Age"])**2
+# df["test"] = np.log(df["Credit_History_Age"])**2
 
 fig = px.imshow(
     df.corr(numeric_only=True),
     text_auto='.3f',  # Show values with 3 decimal places
     color_continuous_scale='Viridis',
     title='Correlation Heatmap',
-    width=1000,  # Increase figure width
-    height=800   # Increase figure height
+    width=1200,  # Increase figure width
+    height=1000   # Increase figure height
 )
 # Decrease font size for x and y axis labels and tick labels
 fig.update_xaxes(tickfont=dict(size=10), title_font=dict(size=12))
