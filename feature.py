@@ -6,12 +6,9 @@ pio.renderers.default = "browser"
 
 from pprint import pprint
 df = pd.read_parquet("collapsed_data.parquet")
-# pprint(dict(df.describe(include='all')))
 
 pprint(dict(df.corr(numeric_only=True)))
 
-# df["test"] = (np.abs(df["Outstanding_Debt"])**2 + np.abs(df["Monthly_Balance"])**2)**(1/10)
-# df["test"] = np.log(df["Credit_History_Age"])**2
 
 fig = px.imshow(
     df.corr(numeric_only=True),

@@ -34,5 +34,6 @@ tdf = pd.DataFrame(rows)
 # Fill std NaNs with 0
 std_cols = [col for col in tdf.columns if col.endswith('_std')]
 tdf[std_cols] = tdf[std_cols].fillna(0)
-
-tdf.to_parquet("collapsed_data.parquet", index=False)
+tdf.drop(["Outstanding_Debt_std"], axis=1, inplace=True)
+tdf.drop(["Occupation"], axis=1, inplace=True)
+tdf.to_parquet("dataset.parquet", index=False)
